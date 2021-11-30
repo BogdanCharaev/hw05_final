@@ -4,8 +4,7 @@
 {% block content %}
 <div class='container py-5'>
   {% include 'posts/includes/switcher.html' %}
-  
- {% for post in page_obj %}
+  {% for post in page_obj %}
       <ul>
         <li>
           Автор: {{ post.author.get_full_name }}

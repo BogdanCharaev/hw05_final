@@ -133,13 +133,11 @@ class CommentFormTests(TestCase):
         form_data = {
             'text': 'some_text'
         }
-
         self.authorized_client.post(
             reverse('posts:add_comment', args=[self.post.id]),
             data=form_data,
             follow=True
         )
-
         response = self.authorized_client.get(
             reverse('posts:post_detail', args=[self.post.id])
         )

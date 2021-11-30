@@ -15,6 +15,9 @@ class PostsURLTests(TestCase):
         cls.user = User.objects.create(
             username='me'
         )
+        cls.user2 = User.objects.create(
+            username='who'
+        )
         cls.user_not_the_author = User.objects.create(
             username='him'
         )
@@ -34,7 +37,13 @@ class PostsURLTests(TestCase):
             f'/profile/{cls.user.username}/': 'posts/profile.html',
             f'/posts/{cls.post.id}/edit/': 'posts/create_post.html',
             '/create/': 'posts/create_post.html',
+            '/follow/': 'posts/follow.html',
         }
+        cls.expected_redirect_urls = [
+            f'/posts/{cls.post.id}/comment',
+            f'/profile/{cls.user2.username}/follow/',
+            f'/profile/{cls.user2.username}/unfollow/'
+        ]
 
     def setUp(self):
         self.guest_client = Client()
@@ -42,6 +51,34 @@ class PostsURLTests(TestCase):
         self.not_the_author_client = Client()
         self.not_the_author_client.force_login(self.user_not_the_author)
         self.authorized_client.force_login(self.user)
+
+    def test_expected_redirect_urls(self):
+        """Проверяет ожидаемый редирект при переходе по юрлу"""
+        for url in PostsURLTests.expected_redirect_urls:
+            with self.subTest(url=url):
+                response = self.authorized_client.get(url)
+                self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+    def test_follow_page_redirects_as_expected(self):
+        """Кнопка *подписаться* редиректит как ожидалось"""
+        adress = f'/profile/{self.user2.username}/follow/'
+        response = self.authorized_client.get(adress)
+        target = f'/profile/{self.user2.username}/'
+        self.assertRedirects(response, target)
+
+    def test_unfollow_page_redirects_as_expected(self):
+        """Кнопка *отписаться* редиректит как ожидалось"""
+        adress = f'/profile/{self.user2.username}/follow/'
+        response = self.authorized_client.get(adress)
+        target = f'/profile/{self.user2.username}/'
+        self.assertRedirects(response, target)
+
+    def test_add_comment_page_redirects_as_expected(self):
+        """Кнопка *отписаться* редиректит как ожидалось"""
+        adress = f'/posts/{self.post.id}/comment'
+        response = self.authorized_client.get(adress)
+        target = f'/posts/{self.post.id}/'
+        self.assertRedirects(response, target)
 
     def test_homepage(self):
         """Главна страница корректно отображается
@@ -138,7 +175,7 @@ class PostsURLTests(TestCase):
 
     def test_urls_exists_at_desired_destination(self):
         """ Однотипные тесты через сабтест:
-        страницы: index, group_posts, profile и post_edit
+        страницы: index, group_posts, profile и post_edit, follow_index
         корректно отображаются для авторизованного пользователя.
         """
         for adress in PostsURLTests.templates_url_names:

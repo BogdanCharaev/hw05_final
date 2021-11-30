@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import CommentForm, PostForm
-from .models import Follow, Group, Post
+from posts.forms import CommentForm, PostForm
+from posts.models import Follow, Group, Post
 
 User = get_user_model()
 
@@ -18,7 +18,6 @@ def index(request):
     context = {
         'page_obj': page_obj,
     }
-
     return render(request, 'posts/index.html', context)
 
 
@@ -36,7 +35,6 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
     paginator = Paginator(post_list, settings.POSTS_PER_PAGE)
@@ -59,11 +57,9 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
     form = CommentForm(request.POST or None)
-
     author = post.author
     count = author.posts.all().count()
     context = {
@@ -77,20 +73,13 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
-
     if request.method != 'POST':
-
         form = PostForm()
-
         return render(request, 'posts/create_post.html', {'form': form})
-
     form = PostForm(request.POST or None,
                     files=request.FILES or None)
-
     if not form.is_valid():
-
         return render(request, 'posts/create_post.html', {'form': form})
-
     post = form.save(commit=False)
     post.author = request.user
     form.save()
@@ -99,31 +88,22 @@ def post_create(request):
 
 @login_required
 def post_edit(request, post_id):
-
     post = get_object_or_404(Post, id=post_id)
     if post.author == request.user:
-
         form = PostForm(request.POST or None,
                         files=request.FILES or None, instance=post)
-
     else:
         return redirect('posts:index')
-
     if request.method != 'POST':
-
         return render(request, 'posts/create_post.html', {'form': form,
                                                           'post': post,
                                                           'is_edit': True})
-
     form = PostForm(request.POST or None,
                     files=request.FILES or None, instance=post)
-
     if not form.is_valid():
-
         return render(request, 'posts/create_post.html', {'form': form,
                                                           'post': post,
                                                           'is_edit': True})
-
     post = form.save(commit=False)
     post.author = request.user
     form.save()
@@ -151,7 +131,6 @@ def follow_index(request):
     context = {
         'page_obj': page_obj,
     }
-
     return render(request, 'posts/follow.html', context)
 
 

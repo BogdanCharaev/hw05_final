@@ -311,7 +311,7 @@ class PaginatorViewsTest(TestCase):
             PaginatorViewsTest.NUMBER_OF_POSTS_FOR_SECOND_PAGE)
 
 
-class FollowViewsTeset(TestCase):
+class FollowViewsTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -370,7 +370,6 @@ class FollowViewsTeset(TestCase):
             )
         )
         response = self.authorized_client.get(reverse('posts:follow_index'))
-
         self.assertEqual(response.context.get('page_obj')[0].text,
                          post_to_exist.text)
         length = len(response.context.get('page_obj').object_list)
