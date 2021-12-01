@@ -89,11 +89,10 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    if post.author == request.user:
-        form = PostForm(request.POST or None,
-                        files=request.FILES or None, instance=post)
-    else:
+    if post.author != request.user:
         return redirect('posts:index')
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None, instance=post)
     if request.method != 'POST':
         return render(request, 'posts/create_post.html', {'form': form,
                                                           'post': post,
@@ -145,8 +144,9 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
-    if request.user != author:
-        object = Follow.objects.filter(user=request.user, author=author)
-        if object.exists():
-            object.delete()
+    if request.user == author:
+        return redirect('posts:profile', username)
+    object = Follow.objects.filter(user=request.user, author=author)
+    if object.exists():
+        object.delete()
     return redirect('posts:profile', username)

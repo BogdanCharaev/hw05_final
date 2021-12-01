@@ -77,15 +77,15 @@ class Follow(models.Model):
         related_name='following')
 
     class Meta:
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
-                fields=[
+                fields=(
                     'user', 'author'
-                ],
+                ),
                 name='Unique user-author constraint'
             )
-        ]
+        )
 
     def __str__(self):
         return (f'Пользователь{self.user} подписан'
-                ' на пользователя {self.author}')
+                f' на пользователя {self.author}')
