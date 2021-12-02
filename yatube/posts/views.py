@@ -97,8 +97,6 @@ def post_edit(request, post_id):
         return render(request, 'posts/create_post.html', {'form': form,
                                                           'post': post,
                                                           'is_edit': True})
-    form = PostForm(request.POST or None,
-                    files=request.FILES or None, instance=post)
     if not form.is_valid():
         return render(request, 'posts/create_post.html', {'form': form,
                                                           'post': post,
