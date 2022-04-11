@@ -8,5 +8,5 @@
 
 Все зависимости в requrements.txt
 
-'pip install -r requirements.txt'
+        pip install -r requirements.txt
 
