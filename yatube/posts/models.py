@@ -83,7 +83,7 @@ class Follow(models.Model):
                     'user', 'author'
                 ),
                 name='Unique user-author constraint'
-            )
+            ),
         )
 
     def __str__(self):
