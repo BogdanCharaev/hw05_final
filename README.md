@@ -1,3 +1,12 @@
-# hw05_final
+## Соц. сеть для публикации дневников.
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+Учебный проект Яндекс.практикума.
+Пользователи имеют возможность публиковать статьи, подписываться 
+на понравившихся авторов. Есть тематические группы.
+Написаны юнит тесты.
+Сервис реализован на Django
+
+Все зависимости в requrements.txt
+
+        pip install -r requirements.txt
+
